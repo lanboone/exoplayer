@@ -1,0 +1,2 @@
+ninja: Entering directory `D:\workspace\android_demo\ExoPlayer-release-v2\ExoPlayer-release-v2\extensions\ffmpeg\.cxx\RelWithDebInfo\5p101v1w\x86'
+ninja: no work to do.

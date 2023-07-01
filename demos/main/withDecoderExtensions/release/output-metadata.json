@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.google.android.exoplayer2.demo",
+  "variantName": "withDecoderExtensionsRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 2018001,
+      "versionName": "2.18.1",
+      "outputFile": "demo-withDecoderExtensions-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

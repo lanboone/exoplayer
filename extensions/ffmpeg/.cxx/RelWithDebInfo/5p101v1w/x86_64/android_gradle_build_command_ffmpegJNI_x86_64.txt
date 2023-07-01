@@ -1,0 +1,7 @@
+Executable : D:\Android\Sdk\cmake\3.22.1\bin\ninja.exe
+arguments : 
+-C
+D:\workspace\android_demo\ExoPlayer-release-v2\ExoPlayer-release-v2\extensions\ffmpeg\.cxx\RelWithDebInfo\5p101v1w\x86_64
+ffmpegJNI
+jvmArgs : 
+

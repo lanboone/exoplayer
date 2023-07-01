@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/ll_bg"
+        android:orientation="vertical"
+        android:layout_margin="100dp"
+        android:padding="20dp"
+        android:background="#A000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <RelativeLayout
+            android:id="@+id/item1"
+            android:background="#80808fff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="#ffff"
+                android:text="音效"
+                android:textSize="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <Switch
+                android:id="@+id/sw_vol"
+                android:checked="false"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+        <TextView
+            android:layout_marginTop="20dp"
+            android:textColor="#ffff"
+            android:text="模式选择"
+            android:textSize="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <RadioGroup
+            android:id="@+id/rg"
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioButton
+                android:id="@+id/rb1"
+                android:textColor="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="标准" />
+
+            <RadioButton
+                android:id="@+id/rb2"
+                android:textColor="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="电影"
+                android:checked="true"/>
+
+
+            <RadioButton
+                android:id="@+id/rb3"
+                android:textColor="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="游戏"/>
+
+            <RadioButton
+                android:id="@+id/rb4"
+                android:textColor="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="音乐"/>
+
+            <RadioButton
+                android:id="@+id/rb5"
+                android:textColor="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="新闻"/>
+
+            <RadioButton
+                android:id="@+id/rb6"
+                android:textColor="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="电视"/>
+        </RadioGroup>
+        <LinearLayout
+            android:gravity="right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+              android:id="@+id/btn_confirm"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="15dp"
+              android:background="#888"
+              android:text="确认"
+              android:textColor="#fff"
+              android:textSize="15dp"
+              tools:visibility="invisible" />
+            <Button
+              android:id="@+id/btn_cancel"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="#888"
+              android:text="取消"
+              android:textColor="#fff"
+              android:textSize="15dp"
+              tools:visibility="invisible" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

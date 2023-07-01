@@ -1,0 +1,2 @@
+ninja: Entering directory `C:\MyWork\work\program\digitalwave\ExoPlayer\ExoPlayer-release-v2\extensions\ffmpeg\.cxx\Debug\3c4z15h4\x86_64'
+ninja: no work to do.

@@ -1,0 +1,7 @@
+[
+{
+  "directory": "D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/.cxx/RelWithDebInfo/5p101v1w/armeabi-v7a",
+  "command": "D:\\Android\\Sdk\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=armv7-none-linux-androideabi16 --gcc-toolchain=D:/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=D:/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DffmpegJNI_EXPORTS -ID:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/src/main/jni/ffmpeg -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -O2 -g -DNDEBUG -fPIC -std=gnu++11 -o CMakeFiles\\ffmpegJNI.dir\\ffmpeg_jni.cc.o -c D:\\workspace\\android_demo\\ExoPlayer-release-v2\\ExoPlayer-release-v2\\extensions\\ffmpeg\\src\\main\\jni\\ffmpeg_jni.cc",
+  "file": "D:\\workspace\\android_demo\\ExoPlayer-release-v2\\ExoPlayer-release-v2\\extensions\\ffmpeg\\src\\main\\jni\\ffmpeg_jni.cc"
+}
+]

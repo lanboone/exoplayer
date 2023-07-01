@@ -1,0 +1,39 @@
+[
+  {
+    "name":"userdata",
+    "samples": [
+      {
+        "name": "test1.mp4",
+        "uri": "/sdcard/userdata/test1.mp4"
+      },
+      {
+        "name": "test2.mp4",
+        "uri": "/sdcard/userdata/test2.mp4"
+      },
+      {
+        "name": "test3.mp4",
+        "uri": "/sdcard/userdata/test3.mp4"
+      },
+      {
+        "name": "test4.mp4",
+        "uri": "/sdcard/userdata/test4.mp4"
+      },
+      {
+        "name": "test5.mp4",
+        "uri": "/sdcard/userdata/test5.mp4"
+      },
+      {
+        "name": "test6.mp4",
+        "uri": "/sdcard/userdata/test6.mp4"
+      },
+      {
+        "name": "test7.mp4",
+        "uri": "/sdcard/userdata/test7.mp4"
+      },
+      {
+        "name": "test8.mp4",
+        "uri": "/sdcard/userdata/test8.mp4"
+      }
+    ]
+  }
+]

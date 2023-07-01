@@ -1,0 +1,17 @@
+# ninja log v5
+0	179	6879860367747886	CMakeFiles/ffmpegJNI.dir/ffmpeg_jni.cc.o	73fa60193ca66b82
+181	277	6879860368761671	D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/buildout/intermediates/cxx/RelWithDebInfo/5p101v1w/obj/x86_64/libffmpegJNI.so	ff0ad95b116f87d7
+0	6	0	clean	8b6eb38772ef9922
+3	164	6882793610162313	CMakeFiles/ffmpegJNI.dir/ffmpeg_jni.cc.o	73fa60193ca66b82
+164	274	6882793611299107	D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/buildout/intermediates/cxx/RelWithDebInfo/5p101v1w/obj/x86_64/libffmpegJNI.so	ff0ad95b116f87d7
+0	23	0	clean	8b6eb38772ef9922
+3	225	6884701919954989	CMakeFiles/ffmpegJNI.dir/ffmpeg_jni.cc.o	73fa60193ca66b82
+225	361	6884701921368085	D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/buildout/intermediates/cxx/RelWithDebInfo/5p101v1w/obj/x86_64/libffmpegJNI.so	ff0ad95b116f87d7
+1	9	0	clean	8b6eb38772ef9922
+3	237	6885573326194579	CMakeFiles/ffmpegJNI.dir/ffmpeg_jni.cc.o	73fa60193ca66b82
+237	402	6885573327876060	D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/buildout/intermediates/cxx/RelWithDebInfo/5p101v1w/obj/x86_64/libffmpegJNI.so	ff0ad95b116f87d7
+0	8	0	clean	8b6eb38772ef9922
+3	169	6895268563919889	CMakeFiles/ffmpegJNI.dir/ffmpeg_jni.cc.o	73fa60193ca66b82
+170	289	6895268565151351	D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/buildout/intermediates/cxx/RelWithDebInfo/5p101v1w/obj/x86_64/libffmpegJNI.so	ff0ad95b116f87d7
+0	8	0	clean	8b6eb38772ef9922
+0	7	0	clean	8b6eb38772ef9922

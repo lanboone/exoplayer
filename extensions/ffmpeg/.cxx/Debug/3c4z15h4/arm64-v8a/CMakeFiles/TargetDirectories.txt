@@ -1,0 +1,3 @@
+C:/MyWork/work/program/digitalwave/ExoPlayer/ExoPlayer-release-v2/extensions/ffmpeg/.cxx/Debug/3c4z15h4/arm64-v8a/CMakeFiles/ffmpegJNI.dir
+C:/MyWork/work/program/digitalwave/ExoPlayer/ExoPlayer-release-v2/extensions/ffmpeg/.cxx/Debug/3c4z15h4/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/MyWork/work/program/digitalwave/ExoPlayer/ExoPlayer-release-v2/extensions/ffmpeg/.cxx/Debug/3c4z15h4/arm64-v8a/CMakeFiles/rebuild_cache.dir

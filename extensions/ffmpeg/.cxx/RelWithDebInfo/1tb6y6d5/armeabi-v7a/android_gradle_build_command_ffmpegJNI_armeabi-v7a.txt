@@ -1,0 +1,7 @@
+Executable : C:\Users\wl_al\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe
+arguments : 
+-C
+C:\MyWork\work\program\digitalwave\ExoPlayer\ExoPlayer-release-v2\extensions\ffmpeg\.cxx\RelWithDebInfo\1tb6y6d5\armeabi-v7a
+ffmpegJNI
+jvmArgs : 
+

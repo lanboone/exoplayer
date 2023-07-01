@@ -1,0 +1,13 @@
+ninja: Entering directory `D:\workspace\android_demo\ExoPlayer-release-v2\ExoPlayer-release-v2\extensions\ffmpeg\.cxx\Debug\5p4h513x\armeabi-v7a'
+[1/2] Building CXX object CMakeFiles/ffmpegJNI.dir/ffmpeg_jni.cc.o
+D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/src/main/jni/ffmpeg_jni.cc:106:3: warning: 'avcodec_register_all' is deprecated [-Wdeprecated-declarations]
+  avcodec_register_all();
+  ^
+D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/src/main/jni/ffmpeg\libavcodec/avcodec.h:4158:1: note: 'avcodec_register_all' has been explicitly marked deprecated here
+attribute_deprecated
+^
+D:/workspace/android_demo/ExoPlayer-release-v2/ExoPlayer-release-v2/extensions/ffmpeg/src/main/jni/ffmpeg\libavutil/attributes.h:94:49: note: expanded from macro 'attribute_deprecated'
+#    define attribute_deprecated __attribute__((deprecated))
+                                                ^
+1 warning generated.
+[2/2] Linking CXX shared library D:\workspace\android_demo\ExoPlayer-release-v2\ExoPlayer-release-v2\extensions\ffmpeg\buildout\intermediates\cxx\Debug\5p4h513x\obj\armeabi-v7a\libffmpegJNI.so

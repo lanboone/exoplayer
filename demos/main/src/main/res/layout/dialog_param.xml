@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/ll_bg"
+        android:orientation="vertical"
+        android:layout_margin="100dp"
+        android:padding="20dp"
+        android:background="#A000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="参数配置"
+          android:textColor="#ffff"
+          android:textSize="18dp" />
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Upmix"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <Switch
+              android:id="@+id/sw_upmix"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentRight="true"
+              android:layout_marginLeft="5dp"
+              android:background="#80808fff"
+              android:checked="false" />
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Upmix延迟"
+              android:layout_marginLeft="100dp"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarUpmixDelay"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/upmixDelay"
+              android:text="6ms"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="渲染"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <Switch
+              android:id="@+id/sw_render"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentRight="true"
+              android:checked="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">、
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="左前"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarLeftFront"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextLeftFront"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text="右前"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarRightFront"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextRightFront"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">、
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="中置"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarMid"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextMid"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text="超低"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarLow"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextLow"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">、
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="左后"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekLeftRear"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextLeftRear"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text="右后"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarRightRear"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextRightRear"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">、
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="左上"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekLeftUp"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextLeftUp"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text="右上"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarRightUp"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextRightUp"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5dp"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="EQ"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <Switch
+              android:id="@+id/sw_Eq"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentRight="true"
+              android:checked="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="150Hz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBar150"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text150"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text="500Hz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBar500"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text500"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="1kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seek1k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text1k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text=" 2kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seek2k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text2k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text=" 4kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seek4k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text4k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text=" 6kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBar6k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text6k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">、
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text=" 8kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seek8k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text8k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text="10kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBar10k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text10k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">、
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="12kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seek12k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text12k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-20dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <TextView
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="30dp"
+              android:text="16kHz"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBar16k"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/Text16k"
+              android:layout_width="50dp"
+              android:layout_height="wrap_content"
+              android:text="-2dB"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5dp"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="DRC"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <Switch
+              android:id="@+id/sw_drc"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentRight="true"
+              android:checked="false" />
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="20dp"
+              android:text="DCR Mode"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+            <RadioGroup
+              android:id="@+id/rg"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+            <RadioButton
+              android:id="@+id/rb0"
+              android:textColor="#fff"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="模式0" />
+
+            <RadioButton
+              android:id="@+id/rb1"
+              android:textColor="#fff"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="模式1"
+              android:checked="true"/>
+
+
+            <RadioButton
+              android:id="@+id/rb2"
+              android:textColor="#fff"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="模式2"/>
+
+            <RadioButton
+              android:id="@+id/rb3"
+              android:textColor="#fff"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="模式3"/>
+                <RadioButton
+                  android:id="@+id/rb4"
+                  android:textColor="#fff"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="模式4"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5dp"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="CTC"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <Switch
+              android:id="@+id/sw_ctc"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentRight="true"
+              android:checked="false" />
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="喇叭距离"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekSpkDis"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextSpkDis"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0.7米"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="20dp"
+              android:text="观看距离"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekSeeDis"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextSeeDis"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="1.2米"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5dp"
+          android:orientation="horizontal">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="循环次数"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarLoopTime"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextLoopTime"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="50"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="20dp"
+              android:text="增益调整"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+            <SeekBar
+              android:id="@+id/seekBarGain"
+              android:layout_weight="1"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"/>
+            <TextView
+              android:id="@+id/TextGain"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="0.7"
+              android:textColor="#ffff"
+              android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:gravity="right">
+            <Button
+              android:id="@+id/btn_confirm"
+              android:layout_width="50dp"
+              android:layout_height="25dp"
+              android:layout_marginRight="15dp"
+              android:background="#888"
+              android:text="确认"
+              android:textColor="#fff"
+              android:textSize="15dp"
+              tools:visibility="invisible" />
+            <Button
+              android:id="@+id/btn_cancel"
+              android:layout_width="50dp"
+              android:layout_height="25dp"
+              android:background="#888"
+              android:text="取消"
+              android:textColor="#fff"
+              android:textSize="15dp"
+              tools:visibility="invisible" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
