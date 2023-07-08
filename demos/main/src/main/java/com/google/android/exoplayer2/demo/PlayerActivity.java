@@ -40,6 +40,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.Tracks;
 import com.google.android.exoplayer2.audio.AudioAttributes;
+import com.google.android.exoplayer2.demo.views.NewSettingDialog;
 import com.google.android.exoplayer2.drm.DefaultDrmSessionManagerProvider;
 import com.google.android.exoplayer2.drm.FrameworkMediaDrm;
 import com.google.android.exoplayer2.ext.ima.ImaAdsLoader;
@@ -101,6 +102,7 @@ public class PlayerActivity extends AppCompatActivity
   ModeDialog ModeDialog = null;
   ParamDialog mParamDialog = null;
   private boolean isEnable = false;
+  NewSettingDialog newSettingDialog = null;
 
   // For ad playback only.
 
@@ -131,7 +133,7 @@ public class PlayerActivity extends AppCompatActivity
     eqSelectBtn.setOnClickListener(this);
 
     ctcChangeBtn = findViewById(R.id.button_ctc);
-    //ctcChangeBtn.setOnClickListener(this);
+    ctcChangeBtn.setOnClickListener(this);
     //ctcChangeBtn.setText("模式4参数设置");
     ctcChangeBtn.setText("Reverse");
 
@@ -153,6 +155,7 @@ public class PlayerActivity extends AppCompatActivity
       clearStartPosition();
     }
     mParamDialog = new ParamDialog(this);
+    newSettingDialog = new NewSettingDialog(this);
 
     ModeDialog = new ModeDialog(this, new ModeDialog.Listener() {
       @Override
@@ -397,7 +400,10 @@ public class PlayerActivity extends AppCompatActivity
       trackSelectionDialog.show(getSupportFragmentManager(), /* tag= */ null);
     }
     else if(view == eqSelectBtn) {
-      ModeDialog.show();
+      newSettingDialog.show();
+
+//      ModeDialog.show();
+
     }else if(view == ctcChangeBtn){
       mParamDialog.show();
       /*

@@ -43,6 +43,7 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,34 +79,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/** An activity for selecting from a list of media samples. */
+/**
+ * An activity for selecting from a list of media samples.
+ */
 public class SampleChooserActivity extends AppCompatActivity
-    implements DownloadTracker.Listener, OnChildClickListener {
+        implements DownloadTracker.Listener, OnChildClickListener {
 
-  private static final String TAG = "SampleChooserActivity";
-  private static final String GROUP_POSITION_PREFERENCE_KEY = "sample_chooser_group_position";
-  private static final String CHILD_POSITION_PREFERENCE_KEY = "sample_chooser_child_position";
+    private static final String TAG = "SampleChooserActivity";
+    private static final String GROUP_POSITION_PREFERENCE_KEY = "sample_chooser_group_position";
+    private static final String CHILD_POSITION_PREFERENCE_KEY = "sample_chooser_child_position";
 
-  private String[] uris;
-  private boolean useExtensionRenderers;
-  private DownloadTracker downloadTracker;
-  private SampleAdapter sampleAdapter;
-  private MenuItem preferExtensionDecodersMenuItem;
-  private ExpandableListView sampleListView;
+    private String[] uris;
+    private boolean useExtensionRenderers;
+    private DownloadTracker downloadTracker;
+    private SampleAdapter sampleAdapter;
+    private MenuItem preferExtensionDecodersMenuItem;
+    private ExpandableListView sampleListView;
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.sample_chooser_activity);
 
-    Permission permission = new Permission();
-    permission.checkPermissions(this);
 
-    sampleAdapter = new SampleAdapter();
-    sampleListView = findViewById(R.id.sample_list);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.sample_chooser_activity);
 
-    sampleListView.setAdapter(sampleAdapter);
-    sampleListView.setOnChildClickListener(this);
+        Permission permission = new Permission();
+        permission.checkPermissions(this);
+
+        sampleAdapter = new SampleAdapter();
+        sampleListView = findViewById(R.id.sample_list);
+
+        sampleListView.setAdapter(sampleAdapter);
+        sampleListView.setOnChildClickListener(this);
 
 //    Intent intent = getIntent();
 //    String dataUri = intent.getDataString();
@@ -129,605 +134,693 @@ public class SampleChooserActivity extends AppCompatActivity
 //      Arrays.sort(uris);
 //      android.util.Log.d(TAG, "onCreate: "+new Gson().toJson(uris));
 //    }
-    ArrayList<String> uriList = new ArrayList<>();
-    String test = Uri.parse("file:///sdcard/userdata/media.exolist.json").getPath();
-    uriList.add(Uri.parse("file:///sdcard/userdata/media.exolist.json").getPath());
-//    Log.d(TAG,"Uri.parse(\"file:///sdcard/userdata/media.exolist.json\").getPath()="+Uri.parse("file:///sdcard/userdata/media.exolist.json").getPath());
-    uris = new String[uriList.size()];
-    uriList.toArray(uris);
-    Arrays.sort(uris);
+        ArrayList<String> uriList = new ArrayList<>();
+        String test = Uri.parse("file:///sdcard/userdata/media.exolist.json").getPath();
+        if (isHeZi()) {
+            uriList.add(Uri.parse("file:///sdcard/userdata/media.exolist.json").getPath());
+        } else {
+            uriList.add(Environment.getExternalStorageDirectory() + "/sdcard/userdata/media.exolist.json");
+        }
 
-    useExtensionRenderers = DemoUtil.useExtensionRenderers();
-    downloadTracker = DemoUtil.getDownloadTracker(/* context= */ this);
-    loadSample();
-    startDownloadService();
+        copyAssetFileToUserData(SampleChooserActivity.this,"conf_0423.json");
+        copyAssetFileToUserData(SampleChooserActivity.this,"mmexport1687698414585.mp4");
+
+        Log.d(TAG, "jsongetPath()=" + Uri.parse("file:///sdcard/userdata/media.exolist.json").getPath());
+        Log.d(TAG, "jsongetPath()=" + Environment.getExternalStorageDirectory() + "/media.exolist.json");
+
+        uris = new String[uriList.size()];
+        uriList.toArray(uris);
+        Arrays.sort(uris);
+
+        useExtensionRenderers = DemoUtil.useExtensionRenderers();
+        downloadTracker = DemoUtil.getDownloadTracker(/* context= */ this);
+        loadSample();
+        startDownloadService();
 
 
-   // EqAudioProcessorJni.getInstance().testFunction();
+        // EqAudioProcessorJni.getInstance().testFunction();
 //    ConfParser parser = new ConfParser();
 //    parser.readConf();
-  }
-
-  private Uri fileToUri(File file){
-    if (file != null) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        //适配Android 7.0文件权限，通过FileProvider创建一个content类型的Uri
-        return FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", file);
-      } else {
-        return  Uri.fromFile(file);
-      }
-    }
-    return null;
-  }
-
-
-  /** Start the download service if it should be running but it's not currently. */
-  private void startDownloadService() {
-    // Starting the service in the foreground causes notification flicker if there is no scheduled
-    // action. Starting it in the background throws an exception if the app is in the background too
-    // (e.g. if device screen is locked).
-    try {
-      DownloadService.start(this, DemoDownloadService.class);
-    } catch (IllegalStateException e) {
-      DownloadService.startForeground(this, DemoDownloadService.class);
-    }
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.sample_chooser_menu, menu);
-    preferExtensionDecodersMenuItem = menu.findItem(R.id.prefer_extension_decoders);
-    preferExtensionDecodersMenuItem.setVisible(useExtensionRenderers);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    item.setChecked(!item.isChecked());
-    return true;
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    downloadTracker.addListener(this);
-    sampleAdapter.notifyDataSetChanged();
-  }
-
-  @Override
-  public void onStop() {
-    downloadTracker.removeListener(this);
-    super.onStop();
-  }
-
-  @Override
-  public void onDownloadsChanged() {
-    sampleAdapter.notifyDataSetChanged();
-  }
-
-  @Override
-  public void onRequestPermissionsResult(
-      int requestCode, String[] permissions, int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (grantResults.length == 0) {
-      // Empty results are triggered if a permission is requested while another request was already
-      // pending and can be safely ignored in this case.
-      return;
-    }
-    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      loadSample();
-    } else {
-      Toast.makeText(getApplicationContext(), R.string.sample_list_load_error, Toast.LENGTH_LONG)
-          .show();
-      finish();
-    }
-  }
-
-  private void loadSample() {
-    checkNotNull(uris);
-    Toast.makeText(this,"uris ="+uris.length,Toast.LENGTH_LONG).show();
-    for (int i = 0; i < uris.length; i++) {
-      Uri uri = Uri.parse(uris[i]);
-      if (Util.maybeRequestReadExternalStoragePermission(this, uri)) {
-        return;
-      }
     }
 
-    SampleListLoader loaderTask = new SampleListLoader();
-    loaderTask.execute(uris);
-  }
-
-  private void onPlaylistGroups(final List<PlaylistGroup> groups, boolean sawError) {
-    if (sawError) {
-      Toast.makeText(getApplicationContext(), R.string.sample_list_load_error, Toast.LENGTH_LONG)
-          .show();
-    }
-    sampleAdapter.setPlaylistGroups(groups);
-
-    SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-    int groupPosition = preferences.getInt(GROUP_POSITION_PREFERENCE_KEY, /* defValue= */ -1);
-    int childPosition = preferences.getInt(CHILD_POSITION_PREFERENCE_KEY, /* defValue= */ -1);
-    // Clear the group and child position if either are unset or if either are out of bounds.
-    if (groupPosition != -1
-        && childPosition != -1
-        && groupPosition < groups.size()
-        && childPosition < groups.get(groupPosition).playlists.size()) {
-      sampleListView.expandGroup(groupPosition); // shouldExpandGroup does not work without this.
-      sampleListView.setSelectedChild(groupPosition, childPosition, /* shouldExpandGroup= */ true);
-    }
-  }
-
-  @Override
-  public boolean onChildClick(
-      ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
-    // Save the selected item first to be able to restore it if the tested code crashes.
-    SharedPreferences.Editor prefEditor = getPreferences(MODE_PRIVATE).edit();
-    prefEditor.putInt(GROUP_POSITION_PREFERENCE_KEY, groupPosition);
-    prefEditor.putInt(CHILD_POSITION_PREFERENCE_KEY, childPosition);
-    prefEditor.apply();
-
-    PlaylistHolder playlistHolder = (PlaylistHolder) view.getTag();
-    Intent intent = new Intent(this, PlayerActivity.class);
-    intent.putExtra(
-        IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA,
-        isNonNullAndChecked(preferExtensionDecodersMenuItem));
-    IntentUtil.addToIntent(playlistHolder.mediaItems, intent);
-    startActivity(intent);
-    return true;
-  }
-
-  private void onSampleDownloadButtonClicked(PlaylistHolder playlistHolder) {
-    int downloadUnsupportedStringId = getDownloadUnsupportedStringId(playlistHolder);
-    if (downloadUnsupportedStringId != 0) {
-      Toast.makeText(getApplicationContext(), downloadUnsupportedStringId, Toast.LENGTH_LONG)
-          .show();
-    } else {
-      RenderersFactory renderersFactory =
-          DemoUtil.buildRenderersFactory(
-              /* context= */ this, isNonNullAndChecked(preferExtensionDecodersMenuItem));
-      downloadTracker.toggleDownload(
-          getSupportFragmentManager(), playlistHolder.mediaItems.get(0), renderersFactory);
-    }
-  }
-
-  private int getDownloadUnsupportedStringId(PlaylistHolder playlistHolder) {
-    if (playlistHolder.mediaItems.size() > 1) {
-      return R.string.download_playlist_unsupported;
-    }
-    MediaItem.LocalConfiguration localConfiguration =
-        checkNotNull(playlistHolder.mediaItems.get(0).localConfiguration);
-    if (localConfiguration.adsConfiguration != null) {
-      return R.string.download_ads_unsupported;
-    }
-    String scheme = localConfiguration.uri.getScheme();
-    if (!("http".equals(scheme) || "https".equals(scheme))) {
-      return R.string.download_scheme_unsupported;
-    }
-    return 0;
-  }
-
-  private static boolean isNonNullAndChecked(@Nullable MenuItem menuItem) {
-    // Temporary workaround for layouts that do not inflate the options menu.
-    return menuItem != null && menuItem.isChecked();
-  }
-
-  private final class SampleListLoader extends AsyncTask<String, Void, List<PlaylistGroup>> {
-
-    private boolean sawError;
-
-    @Override
-    protected List<PlaylistGroup> doInBackground(String... uris) {
-      //add 从这里注入数据
-      //File ext = Environment.getExternalStorageDirectory();//SD卡目录
-      File ext = new File("/sdcard/userdata");
-
-      //File f2 = new File(ext, "media.exolist.json");
-      File f2 = new File("/sdcard/userdata/media.exolist.json");
-      try {
-        List<VideoItem> list = new ArrayList<>();
-        VideoItem videoItem = new VideoItem();
-        videoItem.name = "userdata";
-        videoItem.samples = new ArrayList<>();
-
-        for (String filename : ext.list()) {
-          int i = filename.indexOf('.');
-          if (i != -1) {
-            String name = filename.substring(i);
-            if (name.equalsIgnoreCase(".mp4")
-                || name.equalsIgnoreCase(".3gp")
-                || name.equalsIgnoreCase(".wmv")
-                || name.equalsIgnoreCase(".ts")
-                || name.equalsIgnoreCase(".rmvb")
-                || name.equalsIgnoreCase(".mov")
-                || name.equalsIgnoreCase(".m4v")
-                || name.equalsIgnoreCase(".avi")
-                || name.equalsIgnoreCase(".m3u8")
-                || name.equalsIgnoreCase(".3gpp")
-                || name.equalsIgnoreCase(".3gpp2")
-                || name.equalsIgnoreCase(".mkv")
-                || name.equalsIgnoreCase(".flv")
-                || name.equalsIgnoreCase(".divx")
-                || name.equalsIgnoreCase(".f4v")
-                || name.equalsIgnoreCase(".rm")
-                || name.equalsIgnoreCase(".asf")
-                || name.equalsIgnoreCase(".ram")
-                || name.equalsIgnoreCase(".mpg")
-                || name.equalsIgnoreCase(".v8")
-                || name.equalsIgnoreCase(".swf")
-                || name.equalsIgnoreCase(".m2v")
-                || name.equalsIgnoreCase(".asx")
-                || name.equalsIgnoreCase(".ra")
-                || name.equalsIgnoreCase(".ndivx")
-                || name.equalsIgnoreCase(".xvid")) {
-              Sample sample = new Sample();
-              sample.name = filename;
-
-              sample.uri = "/sdcard/userdata/"+filename;
-              videoItem.samples.add(sample);
+    private Uri fileToUri(File file) {
+        if (file != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                //适配Android 7.0文件权限，通过FileProvider创建一个content类型的Uri
+                return FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", file);
             } else {
-              continue;
+                return Uri.fromFile(file);
             }
-          } else {
-            continue;
-          }
         }
-        list.add(videoItem);
-        OutputStream out = new FileOutputStream(f2);
-        out.write(new Gson().toJson(list).getBytes());
-        out.close();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      //end
+        return null;
+    }
 
-      List<PlaylistGroup> result = new ArrayList<>();
-      Context context = getApplicationContext();
-      DataSource dataSource = DemoUtil.getDataSourceFactory(context).createDataSource();
-      for (String uri : uris) {
-        DataSpec dataSpec = new DataSpec(Uri.parse(uri));
-        InputStream inputStream = new DataSourceInputStream(dataSource, dataSpec);
+
+    /**
+     * Start the download service if it should be running but it's not currently.
+     */
+    private void startDownloadService() {
+        // Starting the service in the foreground causes notification flicker if there is no scheduled
+        // action. Starting it in the background throws an exception if the app is in the background too
+        // (e.g. if device screen is locked).
         try {
-          readPlaylistGroups(new JsonReader(new InputStreamReader(inputStream, "UTF-8")), result);
-        } catch (Exception e) {
-          Log.e(TAG, "Error loading sample list: " + uri, e);
-          sawError = true;
-        } finally {
-          DataSourceUtil.closeQuietly(dataSource);
+            DownloadService.start(this, DemoDownloadService.class);
+        } catch (IllegalStateException e) {
+            DownloadService.startForeground(this, DemoDownloadService.class);
         }
-      }
-      return result;
     }
 
     @Override
-    protected void onPostExecute(List<PlaylistGroup> result) {
-      onPlaylistGroups(result, sawError);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sample_chooser_menu, menu);
+        preferExtensionDecodersMenuItem = menu.findItem(R.id.prefer_extension_decoders);
+        preferExtensionDecodersMenuItem.setVisible(useExtensionRenderers);
+        return true;
     }
 
-    private void readPlaylistGroups(JsonReader reader, List<PlaylistGroup> groups)
-        throws IOException {
-      reader.beginArray();
-      while (reader.hasNext()) {
-        readPlaylistGroup(reader, groups);
-      }
-      reader.endArray();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.setChecked(!item.isChecked());
+        return true;
     }
 
-    private void readPlaylistGroup(JsonReader reader, List<PlaylistGroup> groups)
-        throws IOException {
-      String groupName = "";
-      ArrayList<PlaylistHolder> playlistHolders = new ArrayList<>();
+    @Override
+    public void onStart() {
+        super.onStart();
+        downloadTracker.addListener(this);
+        sampleAdapter.notifyDataSetChanged();
+    }
 
-      reader.beginObject();
-      while (reader.hasNext()) {
-        String name = reader.nextName();
-        switch (name) {
-          case "name":
-            groupName = reader.nextString();
-            break;
-          case "samples":
+    @Override
+    public void onStop() {
+        downloadTracker.removeListener(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onDownloadsChanged() {
+        sampleAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length == 0) {
+            // Empty results are triggered if a permission is requested while another request was already
+            // pending and can be safely ignored in this case.
+            return;
+        }
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            loadSample();
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.sample_list_load_error, Toast.LENGTH_LONG)
+                    .show();
+            finish();
+        }
+    }
+
+    private void loadSample() {
+        checkNotNull(uris);
+        for (int i = 0; i < uris.length; i++) {
+            Uri uri = Uri.parse(uris[i]);
+            if (Util.maybeRequestReadExternalStoragePermission(this, uri)) {
+                return;
+            }
+        }
+
+        SampleListLoader loaderTask = new SampleListLoader();
+        loaderTask.execute(uris);
+    }
+
+    private void onPlaylistGroups(final List<PlaylistGroup> groups, boolean sawError) {
+        if (sawError) {
+            Toast.makeText(getApplicationContext(), R.string.sample_list_load_error, Toast.LENGTH_LONG)
+                    .show();
+        }
+        sampleAdapter.setPlaylistGroups(groups);
+
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        int groupPosition = preferences.getInt(GROUP_POSITION_PREFERENCE_KEY, /* defValue= */ -1);
+        int childPosition = preferences.getInt(CHILD_POSITION_PREFERENCE_KEY, /* defValue= */ -1);
+        // Clear the group and child position if either are unset or if either are out of bounds.
+        if (groupPosition != -1
+                && childPosition != -1
+                && groupPosition < groups.size()
+                && childPosition < groups.get(groupPosition).playlists.size()) {
+            sampleListView.expandGroup(groupPosition); // shouldExpandGroup does not work without this.
+            sampleListView.setSelectedChild(groupPosition, childPosition, /* shouldExpandGroup= */ true);
+        }
+    }
+
+    @Override
+    public boolean onChildClick(
+            ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+        // Save the selected item first to be able to restore it if the tested code crashes.
+        SharedPreferences.Editor prefEditor = getPreferences(MODE_PRIVATE).edit();
+        prefEditor.putInt(GROUP_POSITION_PREFERENCE_KEY, groupPosition);
+        prefEditor.putInt(CHILD_POSITION_PREFERENCE_KEY, childPosition);
+        prefEditor.apply();
+
+        PlaylistHolder playlistHolder = (PlaylistHolder) view.getTag();
+        Intent intent = new Intent(this, PlayerActivity.class);
+        intent.putExtra(
+                IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA,
+                isNonNullAndChecked(preferExtensionDecodersMenuItem));
+        IntentUtil.addToIntent(playlistHolder.mediaItems, intent);
+        startActivity(intent);
+        return true;
+    }
+
+    private void onSampleDownloadButtonClicked(PlaylistHolder playlistHolder) {
+        int downloadUnsupportedStringId = getDownloadUnsupportedStringId(playlistHolder);
+        if (downloadUnsupportedStringId != 0) {
+            Toast.makeText(getApplicationContext(), downloadUnsupportedStringId, Toast.LENGTH_LONG)
+                    .show();
+        } else {
+            RenderersFactory renderersFactory =
+                    DemoUtil.buildRenderersFactory(
+                            /* context= */ this, isNonNullAndChecked(preferExtensionDecodersMenuItem));
+            downloadTracker.toggleDownload(
+                    getSupportFragmentManager(), playlistHolder.mediaItems.get(0), renderersFactory);
+        }
+    }
+
+    private int getDownloadUnsupportedStringId(PlaylistHolder playlistHolder) {
+        if (playlistHolder.mediaItems.size() > 1) {
+            return R.string.download_playlist_unsupported;
+        }
+        MediaItem.LocalConfiguration localConfiguration =
+                checkNotNull(playlistHolder.mediaItems.get(0).localConfiguration);
+        if (localConfiguration.adsConfiguration != null) {
+            return R.string.download_ads_unsupported;
+        }
+        String scheme = localConfiguration.uri.getScheme();
+        if (!("http".equals(scheme) || "https".equals(scheme))) {
+            return R.string.download_scheme_unsupported;
+        }
+        return 0;
+    }
+
+    private static boolean isNonNullAndChecked(@Nullable MenuItem menuItem) {
+        // Temporary workaround for layouts that do not inflate the options menu.
+        return menuItem != null && menuItem.isChecked();
+    }
+
+    private final class SampleListLoader extends AsyncTask<String, Void, List<PlaylistGroup>> {
+
+        private boolean sawError;
+
+        @Override
+        protected List<PlaylistGroup> doInBackground(String... uris) {
+            //add 从这里注入数据
+            //File ext = Environment.getExternalStorageDirectory();//SD卡目录
+            File ext;
+
+            //File f2 = new File(ext, "media.exolist.json");
+            File f2;
+
+            if (isHeZi()) {
+                ext = new File("/sdcard/userdata");
+                f2 = new File("/sdcard/userdata/media.exolist.json");
+            } else {
+                ext = new File(Environment.getExternalStorageDirectory() + "/sdcard/userdata/");
+                f2 = new File(Environment.getExternalStorageDirectory() + "/sdcard/userdata/media.exolist.json");
+            }
+
+            try {
+                List<VideoItem> list = new ArrayList<>();
+                VideoItem videoItem = new VideoItem();
+                videoItem.name = "userdata";
+                videoItem.samples = new ArrayList<>();
+
+                for (String filename : ext.list()) {
+                    int i = filename.indexOf('.');
+                    if (i != -1) {
+                        String name = filename.substring(i);
+                        if (name.equalsIgnoreCase(".mp4")
+                                || name.equalsIgnoreCase(".3gp")
+                                || name.equalsIgnoreCase(".wmv")
+                                || name.equalsIgnoreCase(".ts")
+                                || name.equalsIgnoreCase(".rmvb")
+                                || name.equalsIgnoreCase(".mov")
+                                || name.equalsIgnoreCase(".m4v")
+                                || name.equalsIgnoreCase(".avi")
+                                || name.equalsIgnoreCase(".m3u8")
+                                || name.equalsIgnoreCase(".3gpp")
+                                || name.equalsIgnoreCase(".3gpp2")
+                                || name.equalsIgnoreCase(".mkv")
+                                || name.equalsIgnoreCase(".flv")
+                                || name.equalsIgnoreCase(".divx")
+                                || name.equalsIgnoreCase(".f4v")
+                                || name.equalsIgnoreCase(".rm")
+                                || name.equalsIgnoreCase(".asf")
+                                || name.equalsIgnoreCase(".ram")
+                                || name.equalsIgnoreCase(".mpg")
+                                || name.equalsIgnoreCase(".v8")
+                                || name.equalsIgnoreCase(".swf")
+                                || name.equalsIgnoreCase(".m2v")
+                                || name.equalsIgnoreCase(".asx")
+                                || name.equalsIgnoreCase(".ra")
+                                || name.equalsIgnoreCase(".ndivx")
+                                || name.equalsIgnoreCase(".xvid")) {
+                            Sample sample = new Sample();
+                            sample.name = filename;
+                            if (isHeZi()) {
+                                sample.uri = "/sdcard/userdata/" + filename;
+
+                            }else {
+                                sample.uri = Environment.getExternalStorageDirectory() + "/sdcard/userdata/" + filename;
+
+                            }
+                            videoItem.samples.add(sample);
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+                list.add(videoItem);
+                OutputStream out = new FileOutputStream(f2);
+                out.write(new Gson().toJson(list).getBytes());
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //end
+
+            List<PlaylistGroup> result = new ArrayList<>();
+            Context context = getApplicationContext();
+            DataSource dataSource = DemoUtil.getDataSourceFactory(context).createDataSource();
+            for (String uri : uris) {
+                DataSpec dataSpec = new DataSpec(Uri.parse(uri));
+                InputStream inputStream = new DataSourceInputStream(dataSource, dataSpec);
+                try {
+                    readPlaylistGroups(new JsonReader(new InputStreamReader(inputStream, "UTF-8")), result);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading sample list: " + uri, e);
+                    sawError = true;
+                } finally {
+                    DataSourceUtil.closeQuietly(dataSource);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(List<PlaylistGroup> result) {
+            onPlaylistGroups(result, sawError);
+        }
+
+        private void readPlaylistGroups(JsonReader reader, List<PlaylistGroup> groups)
+                throws IOException {
             reader.beginArray();
             while (reader.hasNext()) {
-              playlistHolders.add(readEntry(reader, false));
+                readPlaylistGroup(reader, groups);
             }
             reader.endArray();
-            break;
-          case "_comment":
-            reader.nextString(); // Ignore.
-            break;
-          default:
-            throw new IOException("Unsupported name: " + name, /* cause= */ null);
         }
-      }
-      reader.endObject();
 
-      PlaylistGroup group = getGroup(groupName, groups);
-      group.playlists.addAll(playlistHolders);
-    }
+        private void readPlaylistGroup(JsonReader reader, List<PlaylistGroup> groups)
+                throws IOException {
+            String groupName = "";
+            ArrayList<PlaylistHolder> playlistHolders = new ArrayList<>();
 
-    private PlaylistHolder readEntry(JsonReader reader, boolean insidePlaylist) throws IOException {
-      Uri uri = null;
-      String extension = null;
-      String title = null;
-      ArrayList<PlaylistHolder> children = null;
-      Uri subtitleUri = null;
-      String subtitleMimeType = null;
-      String subtitleLanguage = null;
-      UUID drmUuid = null;
-      String drmLicenseUri = null;
-      ImmutableMap<String, String> drmLicenseRequestHeaders = ImmutableMap.of();
-      boolean drmSessionForClearContent = false;
-      boolean drmMultiSession = false;
-      boolean drmForceDefaultLicenseUri = false;
-      MediaItem.ClippingConfiguration.Builder clippingConfiguration =
-          new ClippingConfiguration.Builder();
-
-      MediaItem.Builder mediaItem = new MediaItem.Builder();
-      reader.beginObject();
-      while (reader.hasNext()) {
-        String name = reader.nextName();
-        switch (name) {
-          case "name":
-            title = reader.nextString();
-            break;
-          case "uri":
-            uri = Uri.parse(reader.nextString());
-            break;
-          case "extension":
-            extension = reader.nextString();
-            break;
-          case "clip_start_position_ms":
-            clippingConfiguration.setStartPositionMs(reader.nextLong());
-            break;
-          case "clip_end_position_ms":
-            clippingConfiguration.setEndPositionMs(reader.nextLong());
-            break;
-          case "ad_tag_uri":
-            mediaItem.setAdsConfiguration(
-                new MediaItem.AdsConfiguration.Builder(Uri.parse(reader.nextString())).build());
-            break;
-          case "drm_scheme":
-            drmUuid = Util.getDrmUuid(reader.nextString());
-            break;
-          case "drm_license_uri":
-          case "drm_license_url": // For backward compatibility only.
-            drmLicenseUri = reader.nextString();
-            break;
-          case "drm_key_request_properties":
-            Map<String, String> requestHeaders = new HashMap<>();
             reader.beginObject();
             while (reader.hasNext()) {
-              requestHeaders.put(reader.nextName(), reader.nextString());
+                String name = reader.nextName();
+                switch (name) {
+                    case "name":
+                        groupName = reader.nextString();
+                        break;
+                    case "samples":
+                        reader.beginArray();
+                        while (reader.hasNext()) {
+                            playlistHolders.add(readEntry(reader, false));
+                        }
+                        reader.endArray();
+                        break;
+                    case "_comment":
+                        reader.nextString(); // Ignore.
+                        break;
+                    default:
+                        throw new IOException("Unsupported name: " + name, /* cause= */ null);
+                }
             }
             reader.endObject();
-            drmLicenseRequestHeaders = ImmutableMap.copyOf(requestHeaders);
-            break;
-          case "drm_session_for_clear_content":
-            drmSessionForClearContent = reader.nextBoolean();
-            break;
-          case "drm_multi_session":
-            drmMultiSession = reader.nextBoolean();
-            break;
-          case "drm_force_default_license_uri":
-            drmForceDefaultLicenseUri = reader.nextBoolean();
-            break;
-          case "subtitle_uri":
-            subtitleUri = Uri.parse(reader.nextString());
-            break;
-          case "subtitle_mime_type":
-            subtitleMimeType = reader.nextString();
-            break;
-          case "subtitle_language":
-            subtitleLanguage = reader.nextString();
-            break;
-          case "playlist":
-            checkState(!insidePlaylist, "Invalid nesting of playlists");
-            children = new ArrayList<>();
-            reader.beginArray();
+
+            PlaylistGroup group = getGroup(groupName, groups);
+            group.playlists.addAll(playlistHolders);
+        }
+
+        private PlaylistHolder readEntry(JsonReader reader, boolean insidePlaylist) throws IOException {
+            Uri uri = null;
+            String extension = null;
+            String title = null;
+            ArrayList<PlaylistHolder> children = null;
+            Uri subtitleUri = null;
+            String subtitleMimeType = null;
+            String subtitleLanguage = null;
+            UUID drmUuid = null;
+            String drmLicenseUri = null;
+            ImmutableMap<String, String> drmLicenseRequestHeaders = ImmutableMap.of();
+            boolean drmSessionForClearContent = false;
+            boolean drmMultiSession = false;
+            boolean drmForceDefaultLicenseUri = false;
+            MediaItem.ClippingConfiguration.Builder clippingConfiguration =
+                    new ClippingConfiguration.Builder();
+
+            MediaItem.Builder mediaItem = new MediaItem.Builder();
+            reader.beginObject();
             while (reader.hasNext()) {
-              children.add(readEntry(reader, /* insidePlaylist= */ true));
+                String name = reader.nextName();
+                switch (name) {
+                    case "name":
+                        title = reader.nextString();
+                        break;
+                    case "uri":
+                        uri = Uri.parse(reader.nextString());
+                        break;
+                    case "extension":
+                        extension = reader.nextString();
+                        break;
+                    case "clip_start_position_ms":
+                        clippingConfiguration.setStartPositionMs(reader.nextLong());
+                        break;
+                    case "clip_end_position_ms":
+                        clippingConfiguration.setEndPositionMs(reader.nextLong());
+                        break;
+                    case "ad_tag_uri":
+                        mediaItem.setAdsConfiguration(
+                                new MediaItem.AdsConfiguration.Builder(Uri.parse(reader.nextString())).build());
+                        break;
+                    case "drm_scheme":
+                        drmUuid = Util.getDrmUuid(reader.nextString());
+                        break;
+                    case "drm_license_uri":
+                    case "drm_license_url": // For backward compatibility only.
+                        drmLicenseUri = reader.nextString();
+                        break;
+                    case "drm_key_request_properties":
+                        Map<String, String> requestHeaders = new HashMap<>();
+                        reader.beginObject();
+                        while (reader.hasNext()) {
+                            requestHeaders.put(reader.nextName(), reader.nextString());
+                        }
+                        reader.endObject();
+                        drmLicenseRequestHeaders = ImmutableMap.copyOf(requestHeaders);
+                        break;
+                    case "drm_session_for_clear_content":
+                        drmSessionForClearContent = reader.nextBoolean();
+                        break;
+                    case "drm_multi_session":
+                        drmMultiSession = reader.nextBoolean();
+                        break;
+                    case "drm_force_default_license_uri":
+                        drmForceDefaultLicenseUri = reader.nextBoolean();
+                        break;
+                    case "subtitle_uri":
+                        subtitleUri = Uri.parse(reader.nextString());
+                        break;
+                    case "subtitle_mime_type":
+                        subtitleMimeType = reader.nextString();
+                        break;
+                    case "subtitle_language":
+                        subtitleLanguage = reader.nextString();
+                        break;
+                    case "playlist":
+                        checkState(!insidePlaylist, "Invalid nesting of playlists");
+                        children = new ArrayList<>();
+                        reader.beginArray();
+                        while (reader.hasNext()) {
+                            children.add(readEntry(reader, /* insidePlaylist= */ true));
+                        }
+                        reader.endArray();
+                        break;
+                    default:
+                        throw new IOException("Unsupported attribute name: " + name, /* cause= */ null);
+                }
             }
-            reader.endArray();
-            break;
-          default:
-            throw new IOException("Unsupported attribute name: " + name, /* cause= */ null);
+            reader.endObject();
+
+            if (children != null) {
+                List<MediaItem> mediaItems = new ArrayList<>();
+                for (int i = 0; i < children.size(); i++) {
+                    mediaItems.addAll(children.get(i).mediaItems);
+                }
+                return new PlaylistHolder(title, mediaItems);
+            } else {
+                @Nullable
+                String adaptiveMimeType =
+                        Util.getAdaptiveMimeTypeForContentType(
+                                TextUtils.isEmpty(extension)
+                                        ? Util.inferContentType(uri)
+                                        : Util.inferContentTypeForExtension(extension));
+                mediaItem
+                        .setUri(uri)
+                        .setMediaMetadata(new MediaMetadata.Builder().setTitle(title).build())
+                        .setMimeType(adaptiveMimeType)
+                        .setClippingConfiguration(clippingConfiguration.build());
+                if (drmUuid != null) {
+                    mediaItem.setDrmConfiguration(
+                            new MediaItem.DrmConfiguration.Builder(drmUuid)
+                                    .setLicenseUri(drmLicenseUri)
+                                    .setLicenseRequestHeaders(drmLicenseRequestHeaders)
+                                    .setForceSessionsForAudioAndVideoTracks(drmSessionForClearContent)
+                                    .setMultiSession(drmMultiSession)
+                                    .setForceDefaultLicenseUri(drmForceDefaultLicenseUri)
+                                    .build());
+                } else {
+                    checkState(drmLicenseUri == null, "drm_uuid is required if drm_license_uri is set.");
+                    checkState(
+                            drmLicenseRequestHeaders.isEmpty(),
+                            "drm_uuid is required if drm_key_request_properties is set.");
+                    checkState(
+                            !drmSessionForClearContent,
+                            "drm_uuid is required if drm_session_for_clear_content is set.");
+                    checkState(!drmMultiSession, "drm_uuid is required if drm_multi_session is set.");
+                    checkState(
+                            !drmForceDefaultLicenseUri,
+                            "drm_uuid is required if drm_force_default_license_uri is set.");
+                }
+                if (subtitleUri != null) {
+                    MediaItem.SubtitleConfiguration subtitleConfiguration =
+                            new MediaItem.SubtitleConfiguration.Builder(subtitleUri)
+                                    .setMimeType(
+                                            checkNotNull(
+                                                    subtitleMimeType,
+                                                    "subtitle_mime_type is required if subtitle_uri is set."))
+                                    .setLanguage(subtitleLanguage)
+                                    .build();
+                    mediaItem.setSubtitleConfigurations(ImmutableList.of(subtitleConfiguration));
+                }
+                return new PlaylistHolder(title, Collections.singletonList(mediaItem.build()));
+            }
         }
-      }
-      reader.endObject();
 
-      if (children != null) {
-        List<MediaItem> mediaItems = new ArrayList<>();
-        for (int i = 0; i < children.size(); i++) {
-          mediaItems.addAll(children.get(i).mediaItems);
+        private PlaylistGroup getGroup(String groupName, List<PlaylistGroup> groups) {
+            for (int i = 0; i < groups.size(); i++) {
+                if (Objects.equal(groupName, groups.get(i).title)) {
+                    return groups.get(i);
+                }
+            }
+            PlaylistGroup group = new PlaylistGroup(groupName);
+            groups.add(group);
+            return group;
         }
-        return new PlaylistHolder(title, mediaItems);
-      } else {
-        @Nullable
-        String adaptiveMimeType =
-            Util.getAdaptiveMimeTypeForContentType(
-                TextUtils.isEmpty(extension)
-                    ? Util.inferContentType(uri)
-                    : Util.inferContentTypeForExtension(extension));
-        mediaItem
-            .setUri(uri)
-            .setMediaMetadata(new MediaMetadata.Builder().setTitle(title).build())
-            .setMimeType(adaptiveMimeType)
-            .setClippingConfiguration(clippingConfiguration.build());
-        if (drmUuid != null) {
-          mediaItem.setDrmConfiguration(
-              new MediaItem.DrmConfiguration.Builder(drmUuid)
-                  .setLicenseUri(drmLicenseUri)
-                  .setLicenseRequestHeaders(drmLicenseRequestHeaders)
-                  .setForceSessionsForAudioAndVideoTracks(drmSessionForClearContent)
-                  .setMultiSession(drmMultiSession)
-                  .setForceDefaultLicenseUri(drmForceDefaultLicenseUri)
-                  .build());
-        } else {
-          checkState(drmLicenseUri == null, "drm_uuid is required if drm_license_uri is set.");
-          checkState(
-              drmLicenseRequestHeaders.isEmpty(),
-              "drm_uuid is required if drm_key_request_properties is set.");
-          checkState(
-              !drmSessionForClearContent,
-              "drm_uuid is required if drm_session_for_clear_content is set.");
-          checkState(!drmMultiSession, "drm_uuid is required if drm_multi_session is set.");
-          checkState(
-              !drmForceDefaultLicenseUri,
-              "drm_uuid is required if drm_force_default_license_uri is set.");
+    }
+
+    private final class SampleAdapter extends BaseExpandableListAdapter implements OnClickListener {
+
+        private List<PlaylistGroup> playlistGroups;
+
+        public SampleAdapter() {
+            playlistGroups = Collections.emptyList();
         }
-        if (subtitleUri != null) {
-          MediaItem.SubtitleConfiguration subtitleConfiguration =
-              new MediaItem.SubtitleConfiguration.Builder(subtitleUri)
-                  .setMimeType(
-                      checkNotNull(
-                          subtitleMimeType,
-                          "subtitle_mime_type is required if subtitle_uri is set."))
-                  .setLanguage(subtitleLanguage)
-                  .build();
-          mediaItem.setSubtitleConfigurations(ImmutableList.of(subtitleConfiguration));
+
+        public void setPlaylistGroups(List<PlaylistGroup> playlistGroups) {
+            this.playlistGroups = playlistGroups;
+            notifyDataSetChanged();
         }
-        return new PlaylistHolder(title, Collections.singletonList(mediaItem.build()));
-      }
-    }
 
-    private PlaylistGroup getGroup(String groupName, List<PlaylistGroup> groups) {
-      for (int i = 0; i < groups.size(); i++) {
-        if (Objects.equal(groupName, groups.get(i).title)) {
-          return groups.get(i);
+        @Override
+        public PlaylistHolder getChild(int groupPosition, int childPosition) {
+            return getGroup(groupPosition).playlists.get(childPosition);
         }
-      }
-      PlaylistGroup group = new PlaylistGroup(groupName);
-      groups.add(group);
-      return group;
-    }
-  }
 
-  private final class SampleAdapter extends BaseExpandableListAdapter implements OnClickListener {
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
 
-    private List<PlaylistGroup> playlistGroups;
+        @Override
+        public View getChildView(
+                int groupPosition,
+                int childPosition,
+                boolean isLastChild,
+                View convertView,
+                ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                view = getLayoutInflater().inflate(R.layout.sample_list_item, parent, false);
+                View downloadButton = view.findViewById(R.id.download_button);
+                downloadButton.setOnClickListener(this);
+                downloadButton.setFocusable(false);
+            }
+            initializeChildView(view, getChild(groupPosition, childPosition));
+            return view;
+        }
 
-    public SampleAdapter() {
-      playlistGroups = Collections.emptyList();
-    }
+        @Override
+        public int getChildrenCount(int groupPosition) {
+            return getGroup(groupPosition).playlists.size();
+        }
 
-    public void setPlaylistGroups(List<PlaylistGroup> playlistGroups) {
-      this.playlistGroups = playlistGroups;
-      notifyDataSetChanged();
-    }
+        @Override
+        public PlaylistGroup getGroup(int groupPosition) {
+            return playlistGroups.get(groupPosition);
+        }
 
-    @Override
-    public PlaylistHolder getChild(int groupPosition, int childPosition) {
-      return getGroup(groupPosition).playlists.get(childPosition);
-    }
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
 
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-      return childPosition;
-    }
+        @Override
+        public View getGroupView(
+                int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                view =
+                        getLayoutInflater()
+                                .inflate(android.R.layout.simple_expandable_list_item_1, parent, false);
+            }
+            ((TextView) view).setText(getGroup(groupPosition).title);
+            return view;
+        }
 
-    @Override
-    public View getChildView(
-        int groupPosition,
-        int childPosition,
-        boolean isLastChild,
-        View convertView,
-        ViewGroup parent) {
-      View view = convertView;
-      if (view == null) {
-        view = getLayoutInflater().inflate(R.layout.sample_list_item, parent, false);
-        View downloadButton = view.findViewById(R.id.download_button);
-        downloadButton.setOnClickListener(this);
-        downloadButton.setFocusable(false);
-      }
-      initializeChildView(view, getChild(groupPosition, childPosition));
-      return view;
-    }
+        @Override
+        public int getGroupCount() {
+            return playlistGroups.size();
+        }
 
-    @Override
-    public int getChildrenCount(int groupPosition) {
-      return getGroup(groupPosition).playlists.size();
-    }
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
 
-    @Override
-    public PlaylistGroup getGroup(int groupPosition) {
-      return playlistGroups.get(groupPosition);
-    }
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
 
-    @Override
-    public long getGroupId(int groupPosition) {
-      return groupPosition;
-    }
+        @Override
+        public void onClick(View view) {
+            onSampleDownloadButtonClicked((PlaylistHolder) view.getTag());
+        }
 
-    @Override
-    public View getGroupView(
-        int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-      View view = convertView;
-      if (view == null) {
-        view =
-            getLayoutInflater()
-                .inflate(android.R.layout.simple_expandable_list_item_1, parent, false);
-      }
-      ((TextView) view).setText(getGroup(groupPosition).title);
-      return view;
-    }
+        private void initializeChildView(View view, PlaylistHolder playlistHolder) {
+            view.setTag(playlistHolder);
+            TextView sampleTitle = view.findViewById(R.id.sample_title);
+            sampleTitle.setText(playlistHolder.title);
 
-    @Override
-    public int getGroupCount() {
-      return playlistGroups.size();
-    }
-
-    @Override
-    public boolean hasStableIds() {
-      return false;
-    }
-
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-      return true;
+            boolean canDownload = getDownloadUnsupportedStringId(playlistHolder) == 0;
+            boolean isDownloaded =
+                    canDownload && downloadTracker.isDownloaded(playlistHolder.mediaItems.get(0));
+            ImageButton downloadButton = view.findViewById(R.id.download_button);
+            downloadButton.setTag(playlistHolder);
+            downloadButton.setColorFilter(
+                    canDownload ? (isDownloaded ? 0xFF42A5F5 : 0xFFBDBDBD) : 0xFF666666);
+            downloadButton.setImageResource(
+                    isDownloaded ? R.drawable.ic_download_done : R.drawable.ic_download);
+        }
     }
 
-    @Override
-    public void onClick(View view) {
-      onSampleDownloadButtonClicked((PlaylistHolder) view.getTag());
+    private static final class PlaylistHolder {
+
+        public final String title;
+        public final List<MediaItem> mediaItems;
+
+        private PlaylistHolder(String title, List<MediaItem> mediaItems) {
+            checkArgument(!mediaItems.isEmpty());
+            this.title = title;
+            this.mediaItems = Collections.unmodifiableList(new ArrayList<>(mediaItems));
+        }
     }
 
-    private void initializeChildView(View view, PlaylistHolder playlistHolder) {
-      view.setTag(playlistHolder);
-      TextView sampleTitle = view.findViewById(R.id.sample_title);
-      sampleTitle.setText(playlistHolder.title);
+    private static final class PlaylistGroup {
 
-      boolean canDownload = getDownloadUnsupportedStringId(playlistHolder) == 0;
-      boolean isDownloaded =
-          canDownload && downloadTracker.isDownloaded(playlistHolder.mediaItems.get(0));
-      ImageButton downloadButton = view.findViewById(R.id.download_button);
-      downloadButton.setTag(playlistHolder);
-      downloadButton.setColorFilter(
-          canDownload ? (isDownloaded ? 0xFF42A5F5 : 0xFFBDBDBD) : 0xFF666666);
-      downloadButton.setImageResource(
-          isDownloaded ? R.drawable.ic_download_done : R.drawable.ic_download);
+        public final String title;
+        public final List<PlaylistHolder> playlists;
+
+        public PlaylistGroup(String title) {
+            this.title = title;
+            this.playlists = new ArrayList<>();
+        }
     }
-  }
 
-  private static final class PlaylistHolder {
 
-    public final String title;
-    public final List<MediaItem> mediaItems;
+    public static boolean isHeZi() {
 
-    private PlaylistHolder(String title, List<MediaItem> mediaItems) {
-      checkArgument(!mediaItems.isEmpty());
-      this.title = title;
-      this.mediaItems = Collections.unmodifiableList(new ArrayList<>(mediaItems));
+//            try {
+//                File f = new File("/sdcard/userdata/conf.json");
+//                if (!f.exists()) {
+//                    return false;
+//                }
+//            } catch (Exception e) {
+                return false;
+//            }
+//            return true;
+//        }
+
     }
-  }
 
-  private static final class PlaylistGroup {
+    /**
+     * 将 assets 目录下的指定文件复制到 /sdcard/userdata 目录下
+     *
+     * @param context  上下文对象
+     * @param fileName assets 目录下的文件名
+     * @return 成功返回 true，失败返回 false
+     */
+    public static boolean copyAssetFileToUserData(Context context, String fileName) {
+        File userDataDir = new File(Environment.getExternalStorageDirectory(), "/sdcard/userdata");
+        if (!userDataDir.exists()) {
+            if (!userDataDir.mkdirs()) {
+                Log.e(TAG, "Failed to create directory: " + userDataDir.getAbsolutePath());
+                return false;
+            }
+        }
 
-    public final String title;
-    public final List<PlaylistHolder> playlists;
-
-    public PlaylistGroup(String title) {
-      this.title = title;
-      this.playlists = new ArrayList<>();
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            inputStream = context.getAssets().open(fileName);
+            File outputFile = new File(userDataDir, fileName);
+            outputStream = new FileOutputStream(outputFile);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            Log.i(TAG, "File copied to: " + outputFile.getAbsolutePath());
+            return true;
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to copy asset file: " + fileName, e);
+            return false;
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to close stream", e);
+            }
+        }
     }
-  }
+
 }
